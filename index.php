@@ -167,7 +167,7 @@ $skills = $connection->query('SELECT * FROM `skills`');
                 foreach ($commentsOfUsers as $comment){
             ?>
                 <div style="font-size: 35px; margin: auto">
-                    <?=$comment['comment']?>
+                    <?=$comment['id'].':'. $comment['comment']?>
                 </div>
             <? } ?>
 
