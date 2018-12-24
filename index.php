@@ -5,6 +5,18 @@ $connection = new PDO( 'mysql:host=localhost; dbname=academy; charset=utf8', 'ro
 $profile = $connection->query('SELECT * FROM `profile`');
 $profile = $profile->fetchAll();
 
+$education = $connection->query('SELECT * FROM `education` ORDER BY yearEnd DESC ');
+$languages = $connection->query('SELECT * FROM `languages` ');
+
+$interests = $connection->query('SELECT * FROM `interest`');
+
+$experiences = $connection->query('SELECT * FROM `experiences` ORDER BY yearEnd DESC');
+$projects = $connection->query('SELECT * FROM `projects`');
+$skills = $connection->query('SELECT * FROM `skills`');
+
+
+
+
 ?>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->  
@@ -39,24 +51,24 @@ $profile = $profile->fetchAll();
         <div class="sidebar-wrapper">
             <div class="profile-container">
                 <img class="profile" src="assets/images/profile.png" alt="" />
-                <h1 class="name"><?= $profile['name'] ?></h1>
-                <h3 class="tagline"><?= $profile['post'] ?></h3>
+                <h1 class="name"><?= $profile[0]['name'] ?></h1>
+                <h3 class="tagline"><?= $profile[0]['post'] ?></h3>
             </div><!--//profile-container-->
             
             <div class="contact-container container-block">
                 <ul class="list-unstyled contact-list">
-                    <li class="email"><i class="fa fa-envelope"></i><a href="mailto: yourname@email.com"><?= $profileDate['about']['email'] ?></a></li>
-                    <li class="phone"><i class="fa fa-phone"></i><a href="tel: <?= $profileDate['about']['phone']?> "><?= $profileDate['about']['phone'] ?></a></li>
-                    <li class="website"><i class="fa fa-globe"></i><a href="<?= $profileDate['about']['site'] ?>" target="_blank"><?= $profileDate['about']['site'] ?></a></li>
+                    <li class="email"><i class="fa fa-envelope"></i><a href="mailto: yourname@email.com"><?= $profile[0]['email'] ?></a></li>
+                    <li class="phone"><i class="fa fa-phone"></i><a href="tel: <?= $profile[0]['phone']?> "><?= $profile[0]['phone'] ?></a></li>
+                    <li class="website"><i class="fa fa-globe"></i><a href="<?= $profile[0]['site'] ?>" target="_blank"><?= $profile[0]['site'] ?></a></li>
                  </ul>
             </div><!--//contact-container-->
             <div class="education-container container-block">
                 <h2 class="container-block-title">Оброзование</h2>
-                <? foreach($educations as $education) {  ?>
+                <? foreach($education as $step) {  ?>
                 <div class="item">
-                    <h4 class="degree"><?=$education['speciality']  ?></h4>
-                    <h5 class="meta"><?=$education['title']  ?></h5>
-                    <div class="time"><?=$education['yearStart']  ?> - <?=$education['yearEnd']  ?></div>
+                    <h4 class="degree"><?=$step['speciality']  ?></h4>
+                    <h5 class="meta"><?=$step['title']  ?></h5>
+                    <div class="time"><?=$step['yearStart']  ?> - <?=$step['yearEnd']  ?></div>
                 </div><!--//item-->
             	<? 	} ?>
               
@@ -65,8 +77,8 @@ $profile = $profile->fetchAll();
             <div class="languages-container container-block">
                 <h2 class="container-block-title">Языки</h2>
                 <ul class="list-unstyled interests-list">
-                    <? foreach($profileDate['languages'] as $language) { ?>
-                    <li><?=$language['title'] ?> <span class="lang-desc">(<?=$language['level'] ?>)</span></li>
+                    <? foreach($languages as $lang) { ?>
+                    <li><?=$lang['title'] ?> <span class="lang-desc">(<?=$lang['level'] ?>)</span></li>
                     <? } ?>
                 </ul>
             </div><!--//interests-->
@@ -74,8 +86,8 @@ $profile = $profile->fetchAll();
             <div class="interests-container container-block">
                 <h2 class="container-block-title">Интересы</h2>
                 <ul class="list-unstyled interests-list">
-                    <? foreach($profileDate['interest'] as $interest) { ?>
-                    <li><?=$interest?></li>
+                    <? foreach($interests as $inter) { ?>
+                    <li><?=$inter['title']?></li>
                     <? } ?>
                 </ul>
             </div><!--//interests-->
@@ -87,7 +99,7 @@ $profile = $profile->fetchAll();
             <section class="section summary-section">
                 <h2 class="section-title"><i class="fa fa-user"></i>Обо мне</h2>
                 <div class="summary">
-                    <?=$careerDate['about'] ?>
+                    Тут должен быть какой-то текст!
                 </div><!--//summary-->
             </section><!--//section-->
             
@@ -116,7 +128,7 @@ $profile = $profile->fetchAll();
                     <div class="intro">
                 
                 </div><!--//intro-->
-                <? foreach($careerDate['projects'] as $project) { ?>
+                <? foreach($projects as $project) { ?>
                 <div class="item">
                     <span class="project-title"><a href="//<?=$project['link'] ?>"><?=$project['title'] ?></a></span> - <span class="project-tagline"><?=$project['about'] ?></span>
 
@@ -128,7 +140,7 @@ $profile = $profile->fetchAll();
             <section class="skills-section section">
                 <h2 class="section-title"><i class="fa fa-rocket"></i>Навыки</h2>
                 <div class="skillset">
-                    <? foreach ($careerDate['skills'] as $skill) { ?>
+                    <? foreach ($skills as $skill) { ?>
 
                     <div class="item">
                         <h3 class="level-title"><?=$skill['title'] ?></h3>
@@ -140,6 +152,24 @@ $profile = $profile->fetchAll();
                     <? } ?>
                 </div>
             </section><!--//skills-section-->
+
+            <form action="#" method="post">
+                <textarea name="comment"  cols="30" rows="10" placeholder="Оставить отзыв"></textarea>
+                <button>Отправить отзыв </button>
+            </form>
+
+            <?php if($_POST['comment']){
+                $comment = $_POST['comment'];
+                $connection->query("INSERT INTO `comments` (`comment`) VALUES ('$comment')");
+            }
+                $commentsOfUsers = $connection->query('SELECT * FROM `comments`');
+
+                foreach ($commentsOfUsers as $comment){
+            ?>
+                <div style="font-size: 35px; margin: auto">
+                    <?=$comment['comment']?>
+                </div>
+            <? } ?>
 
         </div><!--//main-body-->
     </div>
