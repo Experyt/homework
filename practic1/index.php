@@ -1,11 +1,9 @@
 <?
- 	require_once 'functions.php';
-	$profileDate = require_once ('./date.php');
-	$careerDate = require_once ('./career.php');
-	$educations = getSortedArray($profileDate['education']);
-	$experiences = getSortedArray($careerDate['experiences']);
 
+$connection = new PDO( 'mysql:host=localhost; dbname=academy; charset=utf8', 'root', '');
 
+$profile = $connection->query('SELECT * FROM `profile`');
+$profile = $profile->fetchAll();
 
 ?>
 <!DOCTYPE html>
@@ -41,8 +39,8 @@
         <div class="sidebar-wrapper">
             <div class="profile-container">
                 <img class="profile" src="assets/images/profile.png" alt="" />
-                <h1 class="name"><?= $profileDate['about']['name'] ?></h1>
-                <h3 class="tagline"><?= $profileDate['about']['post'] ?></h3>
+                <h1 class="name"><?= $profile['name'] ?></h1>
+                <h3 class="tagline"><?= $profile['post'] ?></h3>
             </div><!--//profile-container-->
             
             <div class="contact-container container-block">

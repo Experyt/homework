@@ -159,8 +159,10 @@ $skills = $connection->query('SELECT * FROM `skills`');
             </form>
 
             <?php if($_POST['comment']){
-                $comment = $_POST['comment'];
-                $connection->query("INSERT INTO `comments` (`comment`) VALUES ('$comment')");
+                $comment = htmlspecialchars($_POST['comment']);
+                $safe = $connection->prepare("INSERT INTO `comments` (`comment`) VALUES ('$comment')");
+                    $arr = ['comments'=>$comment];
+                    $safe->execute($arr);
             }
                 $commentsOfUsers = $connection->query('SELECT * FROM `comments`');
 

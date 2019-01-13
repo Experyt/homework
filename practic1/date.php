@@ -24,7 +24,7 @@ return[
 	'languages' => [
 		[
 			'title' => 'English',
-			'level' => 'Intermediate C2',
+			'level' => 'Advanced',
 		],
 		[
 			'title' => 'Russian',
